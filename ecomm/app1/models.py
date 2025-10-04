@@ -1,19 +1,29 @@
-from django.contrib import admin
-from .models import Category, Product
+from django.db import models
+from django.db.models.fields import SlugField
 
-# Welcome to the coolest admin setup on the block! 😎
-# Where slugs magically appear like unicorns from your names! 🦄✨
+class Category(models.Model):
+ category_name = models.CharField(max_length=50, unique=True)
+ slug = models.SlugField(max_length=100, unique=True)
+ description = models.TextField(max_length=255, blank=True)
+ cat_image = models.ImageField(upload_to='categories/', blank=True)
+ def __str__ (self):
+    return self.category_name
+ 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    prepopulated_fields = {
-        'slug': ('category_name',)  # Watch this slug grow up from the category_name! 🌱➡️🌳
-    }
+class Product(models.Model):
+ product_name = models.CharField(max_length=200, unique=True)
+ slug = models.SlugField(max_length=200, unique=True)
+ description = models.TextField(max_length=500, blank=True)
+ price = models.IntegerField()
+ images = models.ImageField(upload_to='products/')
+ stock = models.IntegerField()
+ is_available = models.BooleanField(default=True)
+ category = models.ForeignKey(Category, on_delete=models.CASCADE)
+ created_date = models.DateTimeField(auto_now_add=True)
+ modified_date = models.DateTimeField(auto_now=True)
+ def __str__ (self):
+    return self.product_name
 
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    prepopulated_fields = {
-        'slug': ('product_name',)  # Slug alert! Product names turning into slugs faster than you can say "Django rocks!" 🤘🐌
-    }
 
-# Now go ahead and enjoy watching those slugs fill themselves in like magic! 🎩🐇✨
+
+

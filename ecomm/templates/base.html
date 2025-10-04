@@ -84,13 +84,12 @@ $(document).ready(function() {
             <i class="fa fa-bars"></i> All category
           </button>
           <div class="dropdown-menu" aria-labelledby="categoryDropdown">
-            <a class="dropdown-item" href="#">Machinery / Mechanical Parts / Tools</a>
-            <a class="dropdown-item" href="#">Consumer Electronics / Home Appliances</a>
-            <a class="dropdown-item" href="#">Auto / Transportation</a>
-            <a class="dropdown-item" href="#">Apparel / Textiles / Timepieces</a>
-            <a class="dropdown-item" href="#">Home & Garden / Construction / Lights</a>
-            <a class="dropdown-item" href="#">Beauty & Personal Care / Health</a>
-          </div>
+                {% for cat in categories %}
+                  <a class="dropdown-item" href="{% url 'store' %}?category={{ cat.slug }}">{{ cat.category_name }}</a>
+                {% empty %}
+                  <span class="dropdown-item">No categories</span>
+                {% endfor %}
+            </div>
         </div>
       </div>
       <div class="col-auto">

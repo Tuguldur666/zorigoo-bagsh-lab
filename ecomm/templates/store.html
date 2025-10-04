@@ -26,31 +26,29 @@
       <main class="col-md-9">
         <header class="border-bottom mb-4 pb-3">
           <div class="form-inline">
-            <span class="mr-md-auto">32 Items found</span>
+            <span class="mr-md-auto">{{ products|length }} Items found</span>
           </div>
         </header>
 
         <div class="row">
-          <!-- Product cards -->
-          <div class="col-md-4">
-            <figure class="card card-product-grid">
+          {% for product in products %}
+          <div class="col-md-4 mb-4">
+            <figure class="card card-product-grid h-100">
               <div class="img-wrap">
-                <img src="{% static 'images/items/1.jpg' %}" alt="Product">
+                <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="img-fluid">
               </div>
-              <figcaption class="info-wrap">
-                <div class="fix-height">
-					<a href="{% url 'product_detail' %}" class="title">Great item name goes here</a>
-                  <div class="price-wrap mt-2">
-                    <span class="price">$1280</span>
-                    <del class="price-old">$1980</del>
-                  </div>
+              <figcaption class="info-wrap p-2 text-center">
+                <h6 class="title mb-1">{{ product.product_name }}</h6>
+                <div class="price-wrap mt-1">
+                  <span class="price text-primary">${{ product.price }}</span>
                 </div>
-                <a href="#" class="btn btn-block btn-success">Added to cart</a>
+                <a href="#" class="btn btn-block btn-success mt-2">Add to cart</a>
               </figcaption>
             </figure>
           </div>
-
-          <!-- Repeat for other items as needed -->
+          {% empty %}
+          <p class="text-muted">No products available.</p>
+          {% endfor %}
         </div>
 
         <!-- Pagination -->
