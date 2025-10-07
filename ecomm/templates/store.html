@@ -4,25 +4,34 @@
 {% block title %}Store | GreatKart{% endblock %}
 
 {% block content %}
-<!-- Page Title -->
 <section class="section-pagetop bg">
   <div class="container">
     <h2 class="title-page">Our Store</h2>
   </div>
 </section>
 
-<!-- Main Content -->
 <section class="section-content padding-y">
   <div class="container">
     <div class="row">
 
-      <!-- Sidebar Filters -->
+      <!-- ✅ Sidebar with category filter -->
       <aside class="col-md-3">
-        <!-- Filters here (categories, sizes, price, etc.) -->
-        ...
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mb-0">Categories</h6>
+          </div>
+          <ul class="list-group list-group-flush">
+            {% for category in links %}
+              <li class="list-group-item">
+                <a href="{% url 'products_by_category' category.slug %}">
+                  {{ category.category_name|upper }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
       </aside>
 
-      <!-- Product Grid -->
       <main class="col-md-9">
         <header class="border-bottom mb-4 pb-3">
           <div class="form-inline">
@@ -62,6 +71,7 @@
           </ul>
         </nav>
       </main>
+
     </div>
   </div>
 </section>

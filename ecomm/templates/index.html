@@ -1,17 +1,20 @@
 {% extends "base.html" %}
-{% block title %}Shopping Cart - GreatKart{% endblock %}
+{% block title %}Shopping Cart - GreatKart ({{ product_count }} products){% endblock %}
 
 {% block content %}
+<div class="form-inline">
+<span class="mr-md-auto">Latest {{ products|length }} products </span>
+</div>
 <div class="row">
     {% for product in products %}
     <div class="col-md-3 mb-4">
         <div class="card card-product-grid h-100">
             <div class="img-wrap">
-                <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="img-fluid">
+                <img src="/media/{{ product.5 }}" alt="{{ product.1 }}" class="img-fluid">
             </div>
             <figcaption class="info-wrap p-2 text-center">
-                <h6 class="title mb-1">{{ product.product_name }}</h6>
-                <div class="price text-primary">${{ product.price }}</div>
+                <h6 class="title mb-1">{{ product.1 }}</h6>
+                <div class="price text-primary">${{ product.4|floatformat:2 }}</div>
             </figcaption>
         </div>
     </div>

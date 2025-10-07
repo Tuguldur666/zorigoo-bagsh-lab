@@ -19,6 +19,7 @@ urlpatterns = [
     path('search-result/', views.search_result, name='search_result'),
     path('signin/', views.signin, name='signin'),
     path('store/', views.store, name='store'),
+    path('store/category/<slug:category_slug>/', views.store, name='products_by_category'),
 ]
 
 
