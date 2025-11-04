@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from app1 import views
+from carts import views
 
 
 urlpatterns = [
@@ -20,6 +21,12 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('store/', views.store, name='store'),
     path('store/category/<slug:category_slug>/', views.store, name='products_by_category'),
+    path('', views.cart, name='cart'),
+    path('cart/', include('carts.urls')),
+    path('add/<int:product_id>/', views.add_cart, name='add_cart'),
+    path('remove/<int:product_id>/', views.remove_cart, name='remove_cart'),
+    path('remove_item/<int:product_id>/', views.remove_cart_item, name='remove_cart_item'),
+
 ]
 
 

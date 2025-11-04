@@ -17,113 +17,53 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <figure class="itemside align-items-center">
-                <div class="aside">
-                  <img src="{% static 'images/items/11.jpg' %}" class="img-sm" alt="Camera Canon EOS M50 Kit">
-                </div>
-                <figcaption class="info">
-                  <a href="#" class="title text-dark">Camera Canon EOS M50 Kit</a>
-                  <p class="text-muted small">Matrix: 25 Mpx <br> Brand: Canon</p>
-                </figcaption>
-              </figure>
-            </td>
-            <td>
-              <div class="col">
-                <div class="input-group input-spinner">
-                  <div class="input-group-prepend">
-                    <button class="btn btn-light" type="button" id="button-plus"><i class="fa fa-minus"></i></button>
+          {% if cart_items %}
+            {% for item in cart_items %}
+            <tr>
+              <td>
+                <figure class="itemside align-items-center">
+                  <div class="aside">
+                    {% if item.product.image %}
+                      <img src="{{ item.product.image.url }}" class="img-sm" alt="{{ item.product.product_name }}">
+                    {% else %}
+                      <img src="{% static 'images/no-image.png' %}" class="img-sm" alt="No image">
+                    {% endif %}
                   </div>
-                  <input type="text" class="form-control" value="1">
-                  <div class="input-group-append">
-                    <button class="btn btn-light" type="button" id="button-minus"><i class="fa fa-plus"></i></button>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="price-wrap">
-                <var class="price">$1156.00</var>
-                <small class="text-muted">$315.20 each</small>
-              </div>
-            </td>
-            <td class="text-right">
-              <a href="#" class="btn btn-danger"> Remove</a>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <figure class="itemside align-items-center">
-                <div class="aside">
-                  <img src="{% static 'images/items/10.jpg' %}" class="img-sm" alt="ADATA Premier ONE microSDXC">
-                </div>
-                <figcaption class="info">
-                  <a href="#" class="title text-dark">ADATA Premier ONE microSDXC</a>
-                  <p class="text-muted small">Size: 256 GB  <br> Brand: ADATA</p>
-                </figcaption>
-              </figure>
-            </td>
-            <td>
-              <div class="col">
-                <div class="input-group input-spinner">
-                  <div class="input-group-prepend">
-                    <button class="btn btn-light" type="button" id="button-plus"><i class="fa fa-minus"></i></button>
-                  </div>
-                  <input type="text" class="form-control" value="1">
-                  <div class="input-group-append">
-                    <button class="btn btn-light" type="button" id="button-minus"><i class="fa fa-plus"></i></button>
+                  <figcaption class="info">
+                    <a href="{% url 'product_detail' item.product.id %}" class="title text-dark">{{ item.product.product_name }}</a>
+                    <p class="text-muted small">Price: ${{ item.product.price|floatformat:2 }}</p>
+                  </figcaption>
+                </figure>
+              </td>
+              <td>
+                <div class="col">
+                  <div class="input-group input-spinner">
+                    <div class="input-group-prepend">
+                      <a class="btn btn-light" href="{% url 'remove_cart' item.product.id %}"><i class="fa fa-minus"></i></a>
+                    </div>
+                    <input type="text" class="form-control text-center" value="{{ item.quantity }}" readonly>
+                    <div class="input-group-append">
+                      <a class="btn btn-light" href="{% url 'add_cart' item.product.id %}"><i class="fa fa-plus"></i></a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </td>
-            <td>
-              <div class="price-wrap">
-                <var class="price">$149.97</var>
-                <small class="text-muted">$75.00 each</small>
-              </div>
-            </td>
-            <td class="text-right">
-              <a href="#" class="btn btn-danger"> Remove</a>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <figure class="itemside align-items-center">
-                <div class="aside">
-                  <img src="{% static 'images/items/9.jpg' %}" class="img-sm" alt="Logitec headset for gaming">
+              </td>
+              <td>
+                <div class="price-wrap">
+                  <var class="price">${{ item.sub_total|floatformat:2 }}</var>
+                  <small class="text-muted">${{ item.product.price|floatformat:2 }} each</small>
                 </div>
-                <figcaption class="info">
-                  <a href="#" class="title text-dark">Logitec headset for gaming</a>
-                  <p class="small text-muted">Version: CUH-ZCT2E  <br> Brand: Sony</p>
-                </figcaption>
-              </figure>
-            </td>
-            <td>
-              <div class="col">
-                <div class="input-group input-spinner">
-                  <div class="input-group-prepend">
-                    <button class="btn btn-light" type="button" id="button-plus"><i class="fa fa-minus"></i></button>
-                  </div>
-                  <input type="text" class="form-control" value="1">
-                  <div class="input-group-append">
-                    <button class="btn btn-light" type="button" id="button-minus"><i class="fa fa-plus"></i></button>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="price-wrap">
-                <var class="price">$98.00</var>
-                <small class="text-muted">$578.00 each</small>
-              </div>
-            </td>
-            <td class="text-right">
-              <a href="#" class="btn btn-danger"> Remove</a>
-            </td>
-          </tr>
+              </td>
+              <td class="text-right">
+                <a href="{% url 'remove_cart_item' item.product.id %}" class="btn btn-danger">Remove</a>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="4" class="text-center text-muted">Your cart is empty.</td>
+            </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
@@ -133,23 +73,19 @@
     <div class="card">
       <div class="card-body">
         <dl class="dlist-align">
+          <dt>Total items:</dt>
+          <dd class="text-right">{{ quantity }}</dd>
+        </dl>
+        <dl class="dlist-align">
           <dt>Total price:</dt>
-          <dd class="text-right">$69.97</dd>
-        </dl>
-        <dl class="dlist-align">
-          <dt>Tax:</dt>
-          <dd class="text-right">$10.00</dd>
-        </dl>
-        <dl class="dlist-align">
-          <dt>Total:</dt>
-          <dd class="text-right text-dark b"><strong>$59.97</strong></dd>
+          <dd class="text-right">${{ total|floatformat:2 }}</dd>
         </dl>
         <hr>
         <p class="text-center mb-3">
           <img src="{% static 'images/misc/payments.png' %}" height="26" alt="Payment Methods">
         </p>
-        <a href="./place-order.html" class="btn btn-primary btn-block"> Checkout </a>
-        <a href="./store.html" class="btn btn-light btn-block">Continue Shopping</a>
+        <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Checkout </a>
+        <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
       </div>
     </div>
   </aside>
