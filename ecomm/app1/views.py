@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from app1.models import Category, Product
+from django.core.paginator import Paginator
+from app1.models import Product, Category
 import sqlite3 as sql
+
 
 def index(request):
     con = sql.connect('db.sqlite3')
@@ -20,15 +23,20 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
-
-
 def store(request, category_slug=None):
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         products = Product.objects.filter(category=category, is_available=True)
     else:
         products = Product.objects.filter(is_available=True)
-    return render(request, 'store.html', {'products': products})
+    paginator = Paginator(products, 3) 
+    page_number = request.GET.get('page')
+    paged_products = paginator.get_page(page_number)
+
+    context = {
+        'products': paged_products
+    }
+    return render(request, 'store.html', context)
 
 def cart(request):
     return render(request, 'cart.html')
