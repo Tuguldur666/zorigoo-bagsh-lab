@@ -41,9 +41,10 @@ def order_complete(request):
 
 def place_order(request):
     return render(request, 'place_order.html')
-
-def product_detail(request):
-    return render(request, 'product_detail.html')
+    
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, 'product-detail.html', {'product': product})
 
 def register(request):
     return render(request, 'register.html')

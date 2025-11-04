@@ -9,6 +9,7 @@
     {% for product in products %}
     <div class="col-md-3 mb-4">
         <div class="card card-product-grid h-100">
+             <a href="{% url 'product_detail' product.0 %}">
             <div class="img-wrap">
                 <img src="/media/{{ product.5 }}" alt="{{ product.1 }}" class="img-fluid">
             </div>
