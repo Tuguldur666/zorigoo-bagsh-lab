@@ -43,16 +43,30 @@
           {% for product in products %}
           <div class="col-md-4 mb-4">
             <figure class="card card-product-grid h-100">
-              <div class="img-wrap">
-                <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="img-fluid">
-              </div>
+
+              <!-- ✅ Make image clickable to product detail -->
+              <a href="{% url 'product_detail' product.id %}">
+                <div class="img-wrap">
+                  <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="img-fluid">
+                </div>
+              </a>
+
               <figcaption class="info-wrap p-2 text-center">
-                <h6 class="title mb-1">{{ product.product_name }}</h6>
+                <h6 class="title mb-1">
+                  <a href="{% url 'product_detail' product.id %}">
+                    {{ product.product_name }}
+                  </a>
+                </h6>
                 <div class="price-wrap mt-1">
                   <span class="price text-primary">${{ product.price }}</span>
                 </div>
-                <a href="#" class="btn btn-block btn-success mt-2">Add to cart</a>
+
+                <!-- Add to cart button -->
+                <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success mt-2">
+                  Add to cart
+                </a>
               </figcaption>
+
             </figure>
           </div>
           {% empty %}
@@ -60,49 +74,47 @@
           {% endfor %}
         </div>
 
-        <!-- Pagination -->
-<!-- Pagination -->
-{% if products.has_other_pages %}
-<nav class="mt-4" aria-label="Page navigation">
-  <ul class="pagination">
-    <!-- Previous button -->
-    {% if products.has_previous %}
-      <li class="page-item">
-        <a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a>
-      </li>
-    {% else %}
-      <li class="page-item disabled">
-        <span class="page-link">Previous</span>
-      </li>
-    {% endif %}
+        <!-- ✅ Pagination -->
+        {% if products.has_other_pages %}
+        <nav class="mt-4" aria-label="Page navigation">
+          <ul class="pagination">
+            <!-- Previous button -->
+            {% if products.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+              </li>
+            {% endif %}
 
-    <!-- Page numbers -->
-    {% for num in products.paginator.page_range %}
-      {% if products.number == num %}
-        <li class="page-item active">
-          <span class="page-link">{{ num }}</span>
-        </li>
-      {% else %}
-        <li class="page-item">
-          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-        </li>
-      {% endif %}
-    {% endfor %}
+            <!-- Page numbers -->
+            {% for num in products.paginator.page_range %}
+              {% if products.number == num %}
+                <li class="page-item active">
+                  <span class="page-link">{{ num }}</span>
+                </li>
+              {% else %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
 
-    <!-- Next button -->
-    {% if products.has_next %}
-      <li class="page-item">
-        <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
-      </li>
-    {% else %}
-      <li class="page-item disabled">
-        <span class="page-link">Next</span>
-      </li>
-    {% endif %}
-  </ul>
-</nav>
-{% endif %}
-
+            <!-- Next button -->
+            {% if products.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <span class="page-link">Next</span>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% endif %}
       </main>
 
     </div>

@@ -39,7 +39,7 @@
 
             <hr>
 
-            <a href="{% url 'cart' %}?product_id={{ product.id }}" class="btn btn-primary">
+            <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success mt-2">
               <span class="text">Add to cart</span> 
               <i class="fas fa-shopping-cart"></i>  
             </a>

@@ -29,7 +29,7 @@ def store(request, category_slug=None):
         products = Product.objects.filter(category=category, is_available=True)
     else:
         products = Product.objects.filter(is_available=True)
-    paginator = Paginator(products, 3) 
+    paginator = Paginator(products, 5) 
     page_number = request.GET.get('page')
     paged_products = paginator.get_page(page_number)
 

@@ -1,57 +1,61 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from store.models import Product
+from app1.models import Product
 from .models import Cart, CartItem
 
-# a. _cart_id() – session key үүсгэх
+
 def _cart_id(request):
     cart = request.session.session_key
     if not cart:
-        cart = request.session.create()
+        request.session.create()
+        cart = request.session.session_key  
     return cart
 
-# b. add_cart – сагсанд нэмж хадгалах
+
 def add_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-    except Cart.DoesNotExist:
-        cart = Cart.objects.create(cart_id=_cart_id(request))
-        cart.save()
+    cart, created = Cart.objects.get_or_create(cart_id=_cart_id(request))
 
-    try:
-        cart_item = CartItem.objects.get(product=product, cart=cart)
-        cart_item.quantity += 1
-        cart_item.save()
-    except CartItem.DoesNotExist:
-        cart_item = CartItem.objects.create(
-            product=product,
-            quantity=1,
-            cart=cart
-        )
-        cart_item.save()
+    cart_item, created = CartItem.objects.get_or_create(product=product, cart=cart)
+    
+    if not created:
+        if cart_item.quantity < product.stock:  
+            cart_item.quantity += 1
+            cart_item.save()
+        else:
+            from django.contrib import messages
+            messages.warning(request, f"Only {product.stock} items available in stock.")
+    else:
+        if product.stock > 0:
+            cart_item.quantity = 1
+            cart_item.save()
+        else:
+            messages.warning(request, "Product is out of stock.")
+
     return redirect('cart')
 
-# c. remove_cart – quantity-ийг 1 хасах
+
 def remove_cart(request, product_id):
-    cart = Cart.objects.get(cart_id=_cart_id(request))
+    cart = get_object_or_404(Cart, cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
-    cart_item = CartItem.objects.get(product=product, cart=cart)
+    cart_item = get_object_or_404(CartItem, product=product, cart=cart)
+
     if cart_item.quantity > 1:
         cart_item.quantity -= 1
         cart_item.save()
     else:
         cart_item.delete()
+
     return redirect('cart')
 
-# d. remove_cart_item – барааг бүрэн устгах
+
 def remove_cart_item(request, product_id):
-    cart = Cart.objects.get(cart_id=_cart_id(request))
+    cart = get_object_or_404(Cart, cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
-    cart_item = CartItem.objects.get(product=product, cart=cart)
+    cart_item = get_object_or_404(CartItem, product=product, cart=cart)
     cart_item.delete()
     return redirect('cart')
 
-# e. cart – сагсны мэдээллийг дамжуулах
+
 def cart(request, total=0, quantity=0, cart_items=None):
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -60,7 +64,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
             total += item.product.price * item.quantity
             quantity += item.quantity
     except Cart.DoesNotExist:
-        pass
+        cart_items = []
 
     context = {
         'total': total,
