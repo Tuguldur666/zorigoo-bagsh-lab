@@ -1,8 +1,4 @@
 {% load static %}
-<script src="{% static 'js/jquery-2.0.0.min.js' %}"></script>
-<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" />
-<img src="{% static 'images/logo.png' %}" alt="Logo" />
-
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -14,22 +10,20 @@
 <title>{% block title %}GreatKart | One of the Biggest Online Shopping Platform{% endblock %}</title>
 <link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
 
-<script src="{% static 'js/jquery-2.0.0.min.js' %}" type="text/javascript"></script>
-
-<script src="{% static 'js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
+<!-- CSS -->
 <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
-
 <link href="{% static 'fonts/fontawesome/css/all.min.css' %}" type="text/css" rel="stylesheet">
-
 <link href="{% static 'css/ui.css' %}" rel="stylesheet" type="text/css"/>
 <link href="{% static 'css/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
 
-
+<!-- JS -->
+<script src="{% static 'js/jquery-2.0.0.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
-
+    // Custom JS here
 });
 </script>
 
@@ -74,8 +68,9 @@ $(document).ready(function() {
   <div class="container">
     <div class="row align-items-center">
       <div class="col-lg-2 col-md-3 col-6">
+        <!-- Logo -->
         <a href="/" class="brand-wrap">
-          <img class="logo" src="{% static 'images/logo.png' %}" alt="GreatKart Logo">
+            <img class="logo" src="{% static 'images/logo.png' %}" alt="GreatKart Logo">
         </a>
       </div>
       <div class="col-lg col-sm col-md col-6 flex-grow-0">
@@ -92,44 +87,70 @@ $(document).ready(function() {
               <span class="dropdown-item">No categories</span>
             {% endfor %}
         </div>
-        
         </div>
       </div>
       <div class="col-auto">
         <a href="{% url 'store' %}" class="btn btn-outline-primary">Store</a>
       </div>
       <div class="col-lg col-md-6 col-sm-12 col">
-        <form action="" method="get" class="search" role="search">
-          <div class="input-group w-100">
-            <input type="search" name="q" class="form-control" style="width:60%;" placeholder="Search" aria-label="Search products">
-            <div class="input-group-append">
-              <button class="btn btn-primary" type="submit" aria-label="Search">
-                <i class="fa fa-search"></i>
-              </button>
+<form method="GET"
+      action="{% if category %}{% url 'products_by_category' category.slug %}{% else %}{% url 'store' %}{% endif %}"
+      class="form-inline my-2 my-lg-0">
+    <div class="input-group mr-2">
+        <input type="text" name="keyword" class="form-control" placeholder="Search products..." value="{{ keyword }}">
+    </div>
+    <div class="dropdown mr-2">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="priceDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Price range
+        </button>
+        <div class="dropdown-menu p-3" aria-labelledby="priceDropdown" style="min-width: 250px;">
+            <div class="form-row">
+                <div class="col">
+                    <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ min_price }}">
+                </div>
+                <div class="col">
+                    <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ max_price }}">
+                </div>
             </div>
-          </div>
-        </form>
+            <button type="submit" class="btn btn-primary btn-block mt-2">Apply</button>
+        </div>
+    </div>
+    <button class="btn btn-success" type="submit"><i class="fa fa-search"></i> Search</button>
+</form>
       </div>
+
       <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
         <div class="d-flex justify-content-end mb-3 mb-lg-0">
-          <div class="widget-header mr-3">
-            <small class="title text-muted">Welcome guest!</small>
-            <div>
-              <a href="{% url 'signin' %}">Sign in</a> <span class="dark-transp"> | </span>
-              <a href="{% url 'register' %}">Register</a>
-            </div>
-          </div>
-          <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
-            <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
-            <span class="badge badge-pill badge-danger notify">
-                {% if quantity %}
-                    {{ quantity }}
+            <div class="widget-header mr-3">
+                {% if request.user.is_authenticated %}
+                    <small class="title text-muted">Hello, {{ request.user.first_name }}!</small>
+                    <div class="d-flex align-items-center">
+                        {% if request.user.account.pro_image %}
+                            <img src="{{ request.user.account.pro_image.url }}" alt="Profile" class="rounded-circle" width="35" height="35">
+                        {% else %}
+                            <i class="fa fa-user-circle fa-2x"></i>
+                        {% endif %}
+                        <a href="{% url 'accounts:logout' %}" class="ml-2">Log out</a>
+                    </div>
                 {% else %}
-                    0
+                    <small class="title text-muted">Welcome guest!</small>
+                    <div>
+                        <a href="{% url 'accounts:signin' %}">Sign in</a> <span class="dark-transp"> | </span>
+                        <a href="{% url 'accounts:register' %}">Register</a>
+                    </div>
                 {% endif %}
-            </span>
-        </a>
-        
+            </div>
+
+            <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
+                <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
+                <span class="badge badge-pill badge-danger notify">
+                    {% if quantity %}
+                        {{ quantity }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </span>
+            </a>
         </div>
       </div>
     </div>
@@ -137,14 +158,10 @@ $(document).ready(function() {
 </section>
 </header>
 
-<!-- Main content block -->
 <main role="main" class="container">
-  {% block content %}
-  <!-- Page-specific content goes here -->
-  {% endblock %}
+  {% block content %}{% endblock %}
 </main>
 
-<!-- Footer -->
 <footer class="section-footer border-top padding-y">
   <div class="container">
     <p class="float-md-right mb-0">&copy; Copyright 2019 All rights reserved</p>
