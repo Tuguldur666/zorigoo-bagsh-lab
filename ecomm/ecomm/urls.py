@@ -19,6 +19,7 @@ urlpatterns = [
     path('store/search/', app1_views.search, name='store_search'),
     path('store/category/<slug:category_slug>/', app1_views.store, name='products_by_category'),
     path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('accounts/', include('allauth.urls')),
     # --- Cart views (no carts.urls used) ---
     path('cart/', cart_views.cart, name='cart'),
     path('add/<int:product_id>/', cart_views.add_cart, name='add_cart'),

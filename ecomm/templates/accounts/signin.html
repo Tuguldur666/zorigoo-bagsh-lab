@@ -1,4 +1,6 @@
+
 {% extends "base.html" %}
+{% load socialaccount %}
 
 {% block title %}Sign In – GreatKart{% endblock %}
 
@@ -33,6 +35,7 @@
     </form>
   </div>
 </div>
+<a href="{% provider_login_url 'google' %}">Sign in with Google</a>
 
 <p class="text-center mt-4">
   Don't have an account? <a href="{% url 'accounts:register' %}">Sign up</a>
