@@ -3,20 +3,37 @@
 
 {% block content %}
 <div class="form-inline">
-<span class="mr-md-auto">Latest {{ products|length }} products </span>
+    <span class="mr-md-auto">Latest {{ products|length }} products </span>
 </div>
+
 <div class="row">
     {% for product in products %}
     <div class="col-md-3 mb-4">
         <div class="card card-product-grid h-100">
-             <a href="{% url 'product_detail' product.0 %}">
-            <div class="img-wrap">
-                <img src="/media/{{ product.5 }}" alt="{{ product.1 }}" class="img-fluid">
-            </div>
-            <figcaption class="info-wrap p-2 text-center">
-                <h6 class="title mb-1">{{ product.1 }}</h6>
-                <div class="price text-primary">${{ product.4|floatformat:2 }}</div>
-            </figcaption>
+            <a href="{% url 'product_detail' product.data.0 %}">
+                <div class="img-wrap">
+                    <img src="/media/{{ product.data.5 }}" alt="{{ product.data.1 }}" class="img-fluid">
+                </div>
+                <figcaption class="info-wrap p-2 text-center">
+                    <h6 class="title mb-1">{{ product.data.1 }}</h6>
+
+                    <!-- Ratings above price -->
+                    <div class="rating text-warning mb-1">
+                        {% for _ in product.full_stars %}
+                            <i class="fa fa-star"></i>
+                        {% endfor %}
+                        {% if product.half_star %}
+                            <i class="fa fa-star-half-alt"></i>
+                        {% endif %}
+                        {% for _ in product.empty_stars %}
+                            <i class="fa fa-star-o"></i>
+                        {% endfor %}
+                        <span class="text-muted">({{ product.average_rating|floatformat:1 }})</span>
+                    </div>
+
+                    <div class="price text-primary">${{ product.data.4|floatformat:2 }}</div>
+                </figcaption>
+            </a>
         </div>
     </div>
     {% empty %}

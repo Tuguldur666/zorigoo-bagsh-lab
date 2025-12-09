@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ single_product.product_name }} | GreatKart{% endblock %}
+{% block title %}{{ product.product_name }} | GreatKart{% endblock %}
 
 {% block content %}
 <section class="section-content padding-y bg">
@@ -9,14 +9,13 @@
 
     <div class="card">
       <div class="row no-gutters">
+
         <!-- Product Image -->
         <aside class="col-md-6">
           <article class="gallery-wrap"> 
             <div class="img-big-wrap">
               {% if product.images %}
-              <a href="#">
-                <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="img-fluid">
-              </a>
+              <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="img-fluid">
               {% else %}
               <img src="{% static 'images/no-image.png' %}" alt="No image available" class="img-fluid">
               {% endif %}
@@ -39,6 +38,23 @@
 
             <hr>
 
+              <h4>Average rating: 
+                {% for _ in full_stars %}
+                  <i class="fas fa-star text-warning"></i>
+                {% endfor %}
+
+                {% if half_star %}
+                  <i class="fas fa-star-half-alt text-warning"></i>
+                {% endif %}
+
+                {% for _ in empty_stars %}
+                  <i class="far fa-star text-warning"></i>
+                {% endfor %}
+
+                ({{ average_rating }}/5)
+              </h4>
+
+
             <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success mt-2">
               <span class="text">Add to cart</span> 
               <i class="fas fa-shopping-cart"></i>  
@@ -48,5 +64,61 @@
       </div>
     </div>
 
+
+    <!-- REVIEW FORM -->
+    <hr>
+    <h4>Write your review</h4>
+
+    <form method="POST" action="{% url 'submit_review' product.id %}">
+        {% csrf_token %}
+
+        Rate this product:
+        <select name="rate" class="form-control w-25">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+
+        <br>
+
+        <input type="text"
+               class="form-control"
+               placeholder="Enter title"
+               name="title">
+
+        <br>
+
+        <textarea name="review"
+                  class="form-control"
+                  placeholder="Enter review"></textarea>
+
+        <br>
+
+        {% if user.is_authenticated %}
+            <input type="submit" value="Submit review" class="btn btn-primary">
+        {% else %}
+            <p>You must <a href="{% url 'accounts:signin' %}">login</a> first</p>
+        {% endif %}
+    </form>
+
+
+
+    <!-- REVIEW LIST -->
+    <hr>
+    <h4>Customer Reviews</h4>
+
+    {% for c in comments %}
+    <div class="card p-3 mt-3">
+        <h5>{{ c.title }} — ⭐ {{ c.rating }}/5</h5>
+        <p>{{ c.review }}</p>
+        <small>By {{ c.user.username }} on {{ c.created_date }}</small>
+    </div>
+    {% empty %}
+    <p>No reviews yet.</p>
+    {% endfor %}
+
+  </div>
 </section>
-{% endblock content %}
+{% endblock %}

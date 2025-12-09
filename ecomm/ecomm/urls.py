@@ -16,11 +16,12 @@ urlpatterns = [
     path('product/<int:product_id>/', app1_views.product_detail, name='product_detail'),
     path('search-result/', app1_views.search_result, name='search_result'),
     path('store/', app1_views.store, name='store'),
+    path('submit_review/<int:product_id>/', app1_views.submit_review, name='submit_review'),
     path('store/search/', app1_views.search, name='store_search'),
     path('store/category/<slug:category_slug>/', app1_views.store, name='products_by_category'),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('accounts/', include('allauth.urls')),
-    # --- Cart views (no carts.urls used) ---
+    # --- Cart views (no carts.urls used) ---s
     path('cart/', cart_views.cart, name='cart'),
     path('add/<int:product_id>/', cart_views.add_cart, name='add_cart'),
     path('remove/<int:product_id>/', cart_views.remove_cart, name='remove_cart'),

@@ -14,7 +14,7 @@
   <div class="container">
     <div class="row">
 
-      <!-- ✅ Sidebar with category filter -->
+      <!-- Sidebar with category filter -->
       <aside class="col-md-3">
         <div class="card">
           <div class="card-header">
@@ -44,25 +44,40 @@
           <div class="col-md-4 mb-4">
             <figure class="card card-product-grid h-100">
 
-              <!-- ✅ Make image clickable to product detail -->
-              <a href="{% url 'product_detail' product.id %}">
+              <!-- Make image clickable to product detail -->
+              <a href="{% url 'product_detail' product.product.id %}">
                 <div class="img-wrap">
-                  <img src="{{ product.images.url }}" alt="{{ product.product_name }}" class="img-fluid">
+                  <img src="{{ product.product.images.url }}" alt="{{ product.product.product_name }}" class="img-fluid">
                 </div>
               </a>
 
               <figcaption class="info-wrap p-2 text-center">
                 <h6 class="title mb-1">
-                  <a href="{% url 'product_detail' product.id %}">
-                    {{ product.product_name }}
+                  <a href="{% url 'product_detail' product.product.id %}">
+                    {{ product.product.product_name }}
                   </a>
                 </h6>
+
+                <!-- Ratings above price -->
+                <div class="rating text-warning mb-1">
+                  {% for _ in product.full_stars %}
+                    <i class="fa fa-star"></i>
+                  {% endfor %}
+                  {% if product.half_star %}
+                    <i class="fa fa-star-half-alt"></i>
+                  {% endif %}
+                  {% for _ in product.empty_stars %}
+                    <i class="fa fa-star-o"></i>
+                  {% endfor %}
+                  <span class="text-muted">({{ product.average_rating|floatformat:1 }})</span>
+                </div>
+
                 <div class="price-wrap mt-1">
-                  <span class="price text-primary">${{ product.price }}</span>
+                  <span class="price text-primary">${{ product.product.price }}</span>
                 </div>
 
                 <!-- Add to cart button -->
-                <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success mt-2">
+                <a href="{% url 'add_cart' product.product.id %}" class="btn btn-block btn-success mt-2">
                   Add to cart
                 </a>
               </figcaption>
@@ -74,7 +89,7 @@
           {% endfor %}
         </div>
 
-        <!-- ✅ Pagination -->
+        <!-- Pagination -->
         {% if products.has_other_pages %}
         <nav class="mt-4" aria-label="Page navigation">
           <ul class="pagination">
